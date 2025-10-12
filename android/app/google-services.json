@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "267921587505",
+    "project_id": "smarttourism-5e508",
+    "storage_bucket": "smarttourism-5e508.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:267921587505:android:4ac85be2e46f01576f0410",
+        "android_client_info": {
+          "package_name": "com.example.smart_tourism"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuwT6u4gFU2IquVHvXkPmxwIkwXb7cBwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
