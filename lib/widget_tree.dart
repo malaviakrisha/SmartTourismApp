@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth.dart';
 import 'screens/login_register_page.dart';
-import 'screens/admin_home_page.dart';
-import 'screens/artist_home_page.dart';
-import 'screens/user_home_page.dart';
+import 'screens/admin/admin_home_page.dart';
+import 'screens/artist/artist_home_page.dart';
+import 'screens/user/user_home_page.dart';
 
 class WidgetTree extends StatelessWidget {
   const WidgetTree({super.key});
