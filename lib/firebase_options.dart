@@ -47,8 +47,7 @@ class DefaultFirebaseOptions {
     projectId: 'smarttourism-5e508',
     authDomain: 'smarttourism-5e508.firebaseapp.com',
     storageBucket: 'smarttourism-5e508.firebasestorage.app',
-    measurementId: 'G-HL14WZX4XC',
-    databaseURL: 'https://smarttourism-5e508-default-rtdb.firebaseio.com'
+    measurementId: 'G-HL14WZX4XC'
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -56,8 +55,7 @@ class DefaultFirebaseOptions {
     appId: '1:267921587505:android:4ac85be2e46f01576f0410',
     messagingSenderId: '267921587505',
     projectId: 'smarttourism-5e508',
-    storageBucket: 'smarttourism-5e508.firebasestorage.app',
-    databaseURL: 'https://smarttourism-5e508-default-rtdb.firebaseio.com'
+    storageBucket: 'smarttourism-5e508.firebasestorage.app'
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
