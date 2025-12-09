@@ -7,9 +7,9 @@ class PaymentPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Itienary'),
+        title: const Text('Payment'),
       ),
-      body: const Center(child: Text('Itienary')),
+      body: const Center(child: Text('Payment Page')),
     );
   }
 }

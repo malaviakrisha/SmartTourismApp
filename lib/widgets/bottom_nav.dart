@@ -69,7 +69,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       case 'tourist':
         switch (index) {
           case 0:
-            targetPage = const MarketplacePage();
+            targetPage = MarketplacePage(role: widget.role);
             break;
           case 1:
             targetPage = const ItenaryPage();
@@ -88,7 +88,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       case 'artist':
         switch (index) {
           case 0:
-            targetPage = const MarketplacePage();
+            targetPage = MarketplacePage(role: widget.role);
             break;
           case 1:
             targetPage = const PaymentPage();
@@ -107,7 +107,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       case 'admin':
         switch (index) {
           case 0:
-            targetPage = const MarketplacePage();
+            targetPage = MarketplacePage(role: widget.role);
             break;
           case 1:
             targetPage = const DashboardPage();

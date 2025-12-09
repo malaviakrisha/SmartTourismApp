@@ -7,9 +7,9 @@ class FeedbackPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Itienary'),
+        title: const Text('Feedback Page'),
       ),
-      body: const Center(child: Text('Itienary')),
+      body: const Center(child: Text('Feedback Page')),
     );
   }
 }

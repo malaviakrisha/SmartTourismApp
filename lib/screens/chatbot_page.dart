@@ -7,9 +7,9 @@ class ChatbotPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Map'),
+        title: const Text('Chatbot'),
       ),
-      body: const Center(child: Text('Map Navigation')),
+      body: const Center(child: Text('ChatBot Page')),
     );
   }
 }

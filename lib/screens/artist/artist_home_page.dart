@@ -3,6 +3,7 @@ import '../../widgets/top_navbar.dart';
 import '../../widgets/bottom_nav.dart';
 import '../../services/auth_service.dart';
 import '/auth.dart';
+import '../marketplace_page.dart';
 
 class ArtistHomePage extends StatefulWidget {
   const ArtistHomePage({super.key});
@@ -31,8 +32,26 @@ class _ArtistHomePageState extends State<ArtistHomePage> {
 
   void _onTabSelected(int index) {
     setState(() => _selectedIndex = index);
-    // TODO: Add navigation logic for artist pages (marketplace, itenary, payment, chatbot)
+
+    switch (index) {
+      case 0: // Marketplace tab
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => MarketplacePage(role: role)),
+        );
+        break;
+      case 1: // Itenary
+      // Navigator.push(...);
+        break;
+      case 2: // Payment
+      // Navigator.push(...);
+        break;
+      case 3: // Chatbot
+      // Navigator.push(...);
+        break;
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

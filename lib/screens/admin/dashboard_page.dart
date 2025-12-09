@@ -7,9 +7,9 @@ class DashboardPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Itienary'),
+        title: const Text('Dashboard'),
       ),
-      body: const Center(child: Text('Itienary')),
+      body: const Center(child: Text('Dashboard Page')),
     );
   }
 }
