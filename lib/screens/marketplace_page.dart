@@ -1,80 +1,190 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'artist/add_shop_page.dart';
+import 'artist/shop_details_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MarketplacePage extends StatefulWidget {
-  final String role;
-  const MarketplacePage({Key? key, required this.role}) : super(key: key);
+  final String role; // "artist", "admin", "tourist"
+
+  const MarketplacePage({required this.role, Key? key}) : super(key: key);
 
   @override
   State<MarketplacePage> createState() => _MarketplacePageState();
 }
 
 class _MarketplacePageState extends State<MarketplacePage> {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  // tourist controls
+  String searchQuery = "";
+  String selectedCategory = "All";
+  String sortOption = "None";
+
+  Stream<QuerySnapshot> _getShopStream() {
+    if (widget.role == "artist") {
+      return FirebaseFirestore.instance
+          .collection("marketplace")
+          .where("ownerId", isEqualTo: userId)
+          .snapshots();
+    } else {
+      return FirebaseFirestore.instance.collection("marketplace").snapshots();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Marketplace'),
-        actions: [
-          // Only show Add button for artist
-          if (widget.role == 'artist')
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AddShopPage()),
+      appBar: AppBar(title: const Text("Marketplace")),
+
+      floatingActionButton: widget.role == "artist"
+          ? FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddShopPage()),
+          );
+        },
+        child: const Icon(Icons.add),
+      )
+          : null,
+
+      body: Column(
+        children: [
+          if (widget.role == "tourist") ...[
+            // SEARCH BAR
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
+                decoration: const InputDecoration(
+                  hintText: "Search shops...",
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (val) {
+                  setState(() => searchQuery = val.trim().toLowerCase());
+                },
+              ),
+            ),
+
+            // CATEGORY FILTER
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: DropdownButtonFormField<String>(
+                value: selectedCategory,
+                items: const [
+                  DropdownMenuItem(value: "All", child: Text("All Categories")),
+                  DropdownMenuItem(value: "Park", child: Text("Park")),
+                  DropdownMenuItem(value: "Craft", child: Text("Craft")),
+                  DropdownMenuItem(value: "Painting", child: Text("Painting")),
+                  DropdownMenuItem(value: "Handmade", child: Text("Handmade")),
+                ],
+                onChanged: (val) => setState(() => selectedCategory = val!),
+                decoration: const InputDecoration(border: OutlineInputBorder()),
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // SORT DROPDOWN
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: DropdownButtonFormField<String>(
+                value: sortOption,
+                items: const [
+                  DropdownMenuItem(value: "None", child: Text("Sort: None")),
+                  DropdownMenuItem(
+                      value: "LowToHigh", child: Text("Price: Low → High")),
+                  DropdownMenuItem(
+                      value: "HighToLow", child: Text("Price: High → Low")),
+                ],
+                onChanged: (val) => setState(() => sortOption = val!),
+                decoration: const InputDecoration(border: OutlineInputBorder()),
+              ),
+            ),
+          ],
+
+          Expanded(
+            child: StreamBuilder(
+              stream: _getShopStream(),
+              builder: (context, snap) {
+                if (!snap.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                List docs = snap.data!.docs;
+
+                // FILTER: SEARCH
+                if (searchQuery.isNotEmpty) {
+                  docs = docs.where((doc) {
+                    final name = doc['name'].toString().toLowerCase();
+                    return name.contains(searchQuery);
+                  }).toList();
+                }
+
+                // FILTER: CATEGORY
+                if (selectedCategory != "All") {
+                  docs = docs.where((doc) {
+                    return doc['category'] == selectedCategory;
+                  }).toList();
+                }
+
+                // SORT: PRICE
+                if (sortOption == "LowToHigh") {
+                  docs.sort((a, b) => a['price'].compareTo(b['price']));
+                } else if (sortOption == "HighToLow") {
+                  docs.sort((a, b) => b['price'].compareTo(a['price']));
+                }
+
+                if (docs.isEmpty) {
+                  return const Center(child: Text("No shops found"));
+                }
+
+                return ListView.builder(
+                  itemCount: docs.length,
+                  itemBuilder: (context, index) {
+                    final shop = docs[index];
+
+                    return ListTile(
+                      leading: Image.network(
+                        shop['imageUrl'],
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ),
+                      title: Text(shop['name']),
+                      subtitle: Text(
+                        "${shop['category']} • ₹${shop['price']}",
+                      ),
+
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ShopDetailsPage(shopId: shop.id),
+                          ),
+                        );
+                      },
+
+                      trailing: (widget.role == "artist" ||
+                          widget.role == "admin")
+                          ? IconButton(
+                        icon:
+                        const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          await FirebaseFirestore.instance
+                              .collection("marketplace")
+                              .doc(shop.id)
+                              .delete();
+                        },
+                      )
+                          : null,
+                    );
+                  },
                 );
               },
             ),
+          ),
         ],
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-        _db.collection('marketplace').orderBy('createdAt', descending: true).snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final shops = snapshot.data!.docs;
-
-          if (shops.isEmpty) {
-            return const Center(child: Text('No shops found.'));
-          }
-
-          return ListView.builder(
-            itemCount: shops.length,
-            itemBuilder: (context, index) {
-              final data = shops[index].data() as Map<String, dynamic>;
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                child: ListTile(
-                  leading: data['imageUrl'] != null
-                      ? Image.network(data['imageUrl'],
-                      width: 60, height: 60, fit: BoxFit.cover)
-                      : const Icon(Icons.store),
-                  title: Text(data['name'] ?? ''),
-                  subtitle: Text(data['category'] ?? ''),
-                  trailing: widget.role == 'admin'
-                      ? IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      await _db.collection('marketplace').doc(shops[index].id).delete();
-                    },
-                  )
-                      : null,
-                  onTap: () {
-                    // TODO: Navigate to shop details if needed
-                  },
-                ),
-              );
-            },
-          );
-        },
       ),
     );
   }

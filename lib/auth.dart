@@ -10,22 +10,33 @@ class AuthService {
     required String email,
     required String password,
     required String role,
+    required String name,
+    required String phone,
   }) async {
     try {
-      UserCredential userCred = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Store user role in Firestore
-      await _firestore.collection('users').doc(userCred.user!.uid).set({
+      // Store details in Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'uid': userCredential.user!.uid,
         'email': email,
+        'name': name,
+        'phone': phone,
         'role': role,
+        'createdAt': Timestamp.now(),
       });
 
-      return null; // success
+      return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
+    } catch (e) {
+      return e.toString();
     }
   }
 
