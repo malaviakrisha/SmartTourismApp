@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:smart_tourism/screens/admin/admin_booking_page.dart';
+import 'package:smart_tourism/screens/artist/artist_booking_page.dart';
+import 'package:smart_tourism/screens/user/tourist_booking_page.dart';
 import '../services/auth_service.dart';
 
 // Import all destination pages
-import '../screens/user/itenary_page.dart';
 import '../screens/map_page.dart';
 import '../screens/marketplace_page.dart';
-import '../screens/chatbot_page.dart';
-
 import '../screens/artist/payment_page.dart';
 import '../screens/admin/dashboard_page.dart';
 import '../screens/admin/feedback_page.dart';
+import '../screens/user/itinerary/tourist_itinerary_page.dart';
 
 class BottomNavBar extends StatefulWidget {
   final String role;
@@ -36,21 +37,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
           BottomNavigationBarItem(icon: Icon(Icons.store), label: "Marketplace"),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Itinerary"),
           BottomNavigationBarItem(icon: Icon(Icons.location_on), label: "Maps"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chatbot"),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Booking"),
         ];
       case 'artist':
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.store), label: "Marketplace"),
           BottomNavigationBarItem(icon: Icon(Icons.payment), label: "Payment"),
           BottomNavigationBarItem(icon: Icon(Icons.location_on), label: "Maps"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chatbot"),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Booking"),
         ];
       case 'admin':
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.store), label: "Marketplace"),
           BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
           BottomNavigationBarItem(icon: Icon(Icons.feedback), label: "Feedback"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chatbot"),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Booking"),
         ];
       default:
         return const [
@@ -72,13 +73,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
             targetPage = MarketplacePage(role: widget.role);
             break;
           case 1:
-            targetPage = const ItenaryPage();
+            targetPage = TouristItineraryPage();
             break;
           case 2:
             targetPage = const MapPage();
             break;
           case 3:
-            targetPage = const ChatbotPage();
+            targetPage = TouristBookingsPage();
             break;
           default:
             return;
@@ -97,7 +98,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             targetPage = const MapPage();
             break;
           case 3:
-            targetPage = const ChatbotPage();
+            targetPage = ArtistBookingsPage();
             break;
           default:
             return;
@@ -116,7 +117,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             targetPage = const FeedbackPage();
             break;
           case 3:
-            targetPage = const ChatbotPage();
+            targetPage = AdminBookingsPage();
             break;
           default:
             return;
