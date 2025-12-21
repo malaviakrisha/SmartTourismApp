@@ -23,7 +23,10 @@ class _PickLocationPageState extends State<PickLocationPage> {
             icon: const Icon(Icons.check),
             onPressed: selected == null
                 ? null
-                : () => Navigator.pop(context, selected),
+                : () {
+              final LatLng result = selected!;
+              Navigator.of(context).pop<LatLng>(result);
+            },
           ),
         ],
       ),

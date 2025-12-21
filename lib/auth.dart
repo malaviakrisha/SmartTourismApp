@@ -30,6 +30,10 @@ class AuthService {
         'phone': phone,
         'role': role,
         'createdAt': Timestamp.now(),
+        'plan': 'free',
+        'isPaid': false,
+        'paidAt': null,
+        'planDurationDays': 30,
       });
 
       return null;

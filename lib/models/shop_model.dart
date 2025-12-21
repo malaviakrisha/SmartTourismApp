@@ -5,11 +5,13 @@ class Shop {
   final String id;
   final String name;
   final String description;
-  final String imageUrl; // primary image (Cloudinary secure_url)
-  final String ownerId; // artist uid
+  final String imageUrl;
+  final String ownerId;
   final String category;
-  final String location; // freeform: city / coords string
-  final num price; // optional price for items or avg price
+  final String location; // readable address
+  final double latitude;
+  final double longitude;
+  final num price;
   final Timestamp createdAt;
 
   Shop({
@@ -20,11 +22,12 @@ class Shop {
     required this.ownerId,
     required this.category,
     required this.location,
+    required this.latitude,
+    required this.longitude,
     required this.price,
     required this.createdAt,
   });
 
-  // For saving to Firestore (exclude id because id is doc id)
   Map<String, dynamic> toMap() {
     return {
       'name': name,
@@ -33,12 +36,13 @@ class Shop {
       'ownerId': ownerId,
       'category': category,
       'location': location,
+      'latitude': latitude,
+      'longitude': longitude,
       'price': price,
       'createdAt': createdAt,
     };
   }
 
-  // Initialize using a Firestore document snapshot
   factory Shop.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Shop(
@@ -49,11 +53,12 @@ class Shop {
       ownerId: data['ownerId'] ?? '',
       category: data['category'] ?? '',
       location: data['location'] ?? '',
-      price: (data['price'] ?? 0) as num,
+      latitude: (data['latitude'] ?? 0).toDouble(),
+      longitude: (data['longitude'] ?? 0).toDouble(),
+      price: data['price'] ?? 0,
       createdAt: data['createdAt'] ?? Timestamp.now(),
     );
   }
-
   // Optional: fromMap if you use Map<String, dynamic> elsewhere
   factory Shop.fromMap(String id, Map<String, dynamic> data) {
     return Shop(
@@ -64,6 +69,8 @@ class Shop {
       ownerId: data['ownerId'] ?? '',
       category: data['category'] ?? '',
       location: data['location'] ?? '',
+      latitude: (data['latitude'] ?? 0).toDouble(),
+      longitude: (data['longitude'] ?? 0).toDouble(),
       price: (data['price'] ?? 0) as num,
       createdAt: data['createdAt'] ?? Timestamp.now(),
     );

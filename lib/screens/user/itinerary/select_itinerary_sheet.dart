@@ -181,6 +181,8 @@ class SelectItinerarySheet extends StatelessWidget {
                                       'category': shopData['category'],
                                       'price': shopData['price'] ?? 0,
                                       'location': shopData['location'] ?? '',
+                                      'latitude': (shopData['latitude'] ?? 0).toDouble(),
+                                      'longitude':(shopData['longitude'] ?? 0).toDouble(),
                                       'day': day,
                                       'timeSlot': selectedSlot,
                                     });

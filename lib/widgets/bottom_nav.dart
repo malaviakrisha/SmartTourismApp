@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:smart_tourism/screens/admin/admin_booking_page.dart';
 import 'package:smart_tourism/screens/artist/artist_booking_page.dart';
+import 'package:smart_tourism/screens/artist/artist_feedback_page.dart';
 import 'package:smart_tourism/screens/user/tourist_booking_page.dart';
-import '../services/auth_service.dart';
+import 'package:smart_tourism/screens/user/user_feedback_page.dart';
 
 // Import all destination pages
-import '../screens/map_page.dart';
 import '../screens/marketplace_page.dart';
-import '../screens/artist/payment_page.dart';
-import '../screens/admin/dashboard_page.dart';
-import '../screens/admin/feedback_page.dart';
+import '../screens/artist/artist_payment_page.dart';
+import '../screens/admin/admin_dashboard_page.dart';
+import '../screens/admin/admin_feedback_questions_page.dart';
 import '../screens/user/itinerary/tourist_itinerary_page.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -36,15 +36,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.store), label: "Marketplace"),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Itinerary"),
-          BottomNavigationBarItem(icon: Icon(Icons.location_on), label: "Maps"),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Booking"),
+          BottomNavigationBarItem(icon: Icon(Icons.feedback), label: 'Feedback'),
         ];
       case 'artist':
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.store), label: "Marketplace"),
           BottomNavigationBarItem(icon: Icon(Icons.payment), label: "Payment"),
-          BottomNavigationBarItem(icon: Icon(Icons.location_on), label: "Maps"),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Booking"),
+          BottomNavigationBarItem(icon: Icon(Icons.feedback), label: "Feedback"),
         ];
       case 'admin':
         return const [
@@ -76,10 +76,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
             targetPage = TouristItineraryPage();
             break;
           case 2:
-            targetPage = const MapPage();
+            targetPage = TouristBookingsPage();
             break;
           case 3:
-            targetPage = TouristBookingsPage();
+            targetPage= UserFeedbackPage();
             break;
           default:
             return;
@@ -92,13 +92,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
             targetPage = MarketplacePage(role: widget.role);
             break;
           case 1:
-            targetPage = const PaymentPage();
+            targetPage = const ArtistPaymentPage();
             break;
           case 2:
-            targetPage = const MapPage();
+            targetPage = ArtistBookingsPage();
             break;
           case 3:
-            targetPage = ArtistBookingsPage();
+            targetPage= ArtistFeedbackPage();
             break;
           default:
             return;
@@ -111,10 +111,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
             targetPage = MarketplacePage(role: widget.role);
             break;
           case 1:
-            targetPage = const DashboardPage();
+            targetPage = const AdminDashboardPage();
             break;
           case 2:
-            targetPage = const FeedbackPage();
+            targetPage = const AdminFeedbackQuestionsPage();
             break;
           case 3:
             targetPage = AdminBookingsPage();

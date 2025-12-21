@@ -6,6 +6,9 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import '../maps/pick_location_page.dart';
+import 'package:latlong2/latlong.dart';
+import './artist_payment_page.dart';
 
 class AddShopPage extends StatefulWidget {
   const AddShopPage({Key? key}) : super(key: key);
@@ -20,6 +23,9 @@ class _AddShopPageState extends State<AddShopPage> {
   final TextEditingController _descController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+
+  double? selectedLat;
+  double? selectedLng;
 
   Uint8List? _pickedImage;
   bool _isLoading = false;
@@ -57,7 +63,47 @@ class _AddShopPageState extends State<AddShopPage> {
     return null;
   }
 
+  bool isPlanActive(Timestamp? paidAt, int? durationDays) {
+    if (paidAt == null || durationDays == null) return false;
+    final expiryDate = paidAt.toDate().add(Duration(days: durationDays));
+    return DateTime.now().isBefore(expiryDate);
+  }
+
   Future<void> _submit() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get();
+
+    final paidAt = userDoc['paidAt'];
+    final duration = userDoc['planDurationDays'];
+
+    if (!isPlanActive(paidAt, duration)) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Plan Expired"),
+          content: const Text("Please renew your plan to continue"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ArtistPaymentPage(),
+                  ),
+                );
+              },
+              child: const Text("Renew"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     if (_pickedImage == null ||
         _nameController.text.isEmpty ||
         _descController.text.isEmpty ||
@@ -78,12 +124,21 @@ class _AddShopPageState extends State<AddShopPage> {
 
       final userId = FirebaseAuth.instance.currentUser!.uid;
 
+      if (selectedLat == null || selectedLng == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please pick shop location on map")),
+        );
+        return;
+      }
+
       await FirebaseFirestore.instance.collection("marketplace").add({
         "name": _nameController.text.trim(),
         "description": _descController.text.trim(),
         "category": _categoryController.text.trim(),
         "price": double.tryParse(_priceController.text.trim()) ?? 0.0,
         "location": _locationController.text.trim(),
+        "latitude": selectedLat,
+        "longitude": selectedLng,
         "imageUrl": imgUrl,
         "ownerId": userId,
         "createdAt": FieldValue.serverTimestamp(),
@@ -136,7 +191,25 @@ class _AddShopPageState extends State<AddShopPage> {
 
             TextField(
               controller: _locationController,
-              decoration: const InputDecoration(labelText: "Location"),
+              readOnly: true,
+              onTap: () async {
+                final LatLng? result = await Navigator.of(context).push<LatLng>(
+                  MaterialPageRoute(builder: (_) => const PickLocationPage()),
+                );
+
+                if (result != null) {
+                  setState(() {
+                    selectedLat = result.latitude;
+                    selectedLng = result.longitude;
+                    _locationController.text =
+                    "${result.latitude.toStringAsFixed(5)}, ${result.longitude.toStringAsFixed(5)}";
+                  });
+                }
+              },
+              decoration: const InputDecoration(
+                labelText: "Pick Location on Map",
+                suffixIcon: Icon(Icons.map),
+              ),
             ),
             const SizedBox(height: 12),
 
@@ -158,6 +231,7 @@ class _AddShopPageState extends State<AddShopPage> {
                 child: const Icon(Icons.add_a_photo, size: 50),
               ),
             ),
+
 
             const SizedBox(height: 20),
 

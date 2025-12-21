@@ -5,6 +5,8 @@ class ItineraryItem {
   final String category;
   final int price;
   final String location;
+  final double latitude;
+  final double longitude;
 
   final int day;
   final String timeSlot;
@@ -15,7 +17,9 @@ class ItineraryItem {
     required this.shopName,
     required this.category,
     required this.price,
+    required this.latitude,
     required this.location,
+    required this.longitude,
     required this.day,
     required this.timeSlot,
   });
@@ -27,7 +31,9 @@ class ItineraryItem {
       'shopName': shopName,
       'category': category,
       'price': price,
+      'latitude': latitude,
       'location': location,
+      'longitude':longitude,
       'day': day,
       'timeSlot': timeSlot,
     };
