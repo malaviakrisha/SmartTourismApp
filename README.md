@@ -1,16 +1,17 @@
-# smart_tourism
+🌄 Jharkhand Smart Tourism App
+A Flutter-based mobile application designed to promote tourism in Jharkhand by helping users discover popular destinations, explore categories like waterfalls and hills, and plan trips efficiently.
 
-A new Flutter project.
+🚀 Features
+- User Authentication (Firebase)
+- Featured & Popular Destinations
+- Category-based browsing
+- Destination detail view
+- Profile & Logout functionality
 
-## Getting Started
+🛠 Tech Stack
+- Flutter (Dart)
+- Firebase Auth
+- Cloud Firestore
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+🎯 Goal
+To create a centralized, mobile-friendly platform that digitally promotes Jharkhand tourism and simplifies travel exploration.
